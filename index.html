@@ -4,251 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PoolCalc Pro - Plano de Ação</title>
-    <style>
-        :root {
-            --primary: #0077be;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --critical: #4b0082;
-            --bg: #f4f7f6;
-        }
-
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); padding: 15px; color: #333; }
-        .container { max-width: 480px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: auto; }
-        
-        h2 { color: var(--primary); text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; font-size: 0.85em; color: #666; margin-bottom: 20px; }
-
-        .section-title { font-size: 0.8em; font-weight: bold; text-transform: uppercase; color: #888; margin: 20px 0 10px; display: block; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
-        
-        .flex-inputs { display: flex; gap: 10px; }
-        .flex-inputs input { flex: 1; }
-
-        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; }
-
-        button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        .result-box { margin-top: 25px; display: none; }
-        .vol-display { font-size: 1.1em; text-align: center; margin-bottom: 15px; font-weight: bold; color: var(--primary); background: #e3f2fd; padding: 10px; border-radius: 8px; }
-
-        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-right: 1px solid #eee; border-top: 1px solid #eee; border-bottom: 1px solid #eee;}
-        .card.ok { border-left-color: var(--success); }
-        .card.warning { border-left-color: var(--warning); }
-        .card.danger { border-left-color: var(--danger); }
-        .card.critical { border-left-color: var(--critical); }
-
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .status-badge { font-size: 0.7em; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; border: 1px solid;}
-        
-        .action-plan { font-size: 0.9em; line-height: 1.4; color: #444; }
-        .action-plan b { color: #000; }
-        .alert-callout { color: var(--danger); font-weight: bold; display: block; margin-bottom: 5px; text-decoration: underline; }
-        
-        .instruction-footer { background: #fffde7; padding: 15px; border-radius: 8px; font-size: 0.85em; border: 1px solid #fff59d; margin-top: 20px; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>PoolCalc Pro</h2>
-    <p class="subtitle">Manejo Profissional de Água</p>
     
-    <span class="section-title">Volume da Piscina</span>
-    <div class="input-group">
-        <label>Dimensões (Metros)</label>
-        <div class="flex-inputs">
-            <input type="number" id="largura" placeholder="Larg." step="0.1">
-            <input type="number" id="comprimento" placeholder="Comp." step="0.1">
-            <input type="number" id="profundidade" placeholder="Prof." step="0.1">
-        </div>
-    </div>
-
-    <span class="section-title">Parâmetros Atuais</span>
-    <div class="input-group"><label>Cloro Livre (ppm)</label><input type="number" id="cloro" step="0.1" placeholder="0.5"></div>
-    <div class="input-group"><label>pH</label><input type="number" id="ph" step="0.1" placeholder="7.2"></div>
-    <div class="input-group"><label>Alcalinidade (ppm)</label><input type="number" id="alca" placeholder="100"></div>
-
-    <button onclick="calcular()">GERAR PLANO DE AÇÃO</button>
-
-    <div id="resultado" class="result-box">
-        <div id="volText" class="vol-display"></div>
-        
-        <div id="cardAlca" class="card">
-            <div class="card-header"><strong>1. Alcalinidade</strong> <span id="badgeAlca" class="status-badge"></span></div>
-            <div id="msgAlca" class="action-plan"></div>
-        </div>
-
-        <div id="cardPH" class="card">
-            <div class="card-header"><strong>2. Potencial de Hidrogênio (pH)</strong> <span id="badgePH" class="status-badge"></span></div>
-            <div id="msgPH" class="action-plan"></div>
-        </div>
-
-        <div id="cardCloro" class="card">
-            <div class="card-header"><strong>3. Sanitização (Cloro)</strong> <span id="badgeCloro" class="status-badge"></span></div>
-            <div id="msgCloro" class="action-plan"></div>
-        </div>
-
-        <div class="instruction-footer">
-            <strong>⚠️ Regras de Ouro:</strong>
-            <ul style="margin: 8px 0; padding-left: 18px;">
-                <li>Ajuste primeiro a alcalinidade, depois o pH e por último o cloro.</li>
-                <li>Sempre dissolva produtos sólidos em um balde com água da própria piscina.</li>
-                <li>Mantenha o filtro em modo <b>Recircular</b> por no mínimo 2 a 4 horas após aplicar produtos.</li>
-                <li>Nunca misture produtos químicos secos entre si.</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<script>
-function calcular() {
-    const L = parseFloat(document.getElementById('largura').value);
-    const C = parseFloat(document.getElementById('comprimento').value);
-    const P = parseFloat(document.getElementById('profundidade').value);
-    const cloro = parseFloat(document.getElementById('cloro').value);
-    const ph = parseFloat(document.getElementById('ph').value);
-    const alca = parseFloat(document.getElementById('alca').value);
-
-    if (!L || !C || !P) { alert("Informe as dimensões."); return; }
-
-    const m3 = L * C * P;
-    const litros = m3 * 1000;
-    document.getElementById('volText').innerHTML = `Volume: ${m3.toFixed(2)} m³ (${litros.toLocaleString()} Litros)`;
-
-    // --- ALCALINIDADE ---
-    const bA = document.getElementById('badgeAlca');
-    const mA = document.getElementById('msgAlca');
-    const cA = document.getElementById('cardAlca');
-    
-    if (alca < 80) {
-        const dose = (100 - alca) * 1.7 * m3;
-        bA.innerText = "Corrigir Urgente"; cA.className = "card danger";
-        mA.innerHTML = `Aplique <b>${Math.round(dose)}g de Bicarbonato de Sódio</b> em dose única. Reavalie após 6 horas de circulação.`;
-    } else if (alca > 120) {
-        const dose = (alca - 100) * 1.5 * m3; // Ref aproximada p/ redução
-        bA.innerText = "Alta"; cA.className = "card warning";
-        mA.innerHTML = `Aplique <b>${Math.round(dose)}ml de Redutor de pH/Alcalinidade</b>. Divida em 2 doses com intervalo de 6h entre elas.`;
-    } else {
-        bA.innerText = "Ideal"; cA.className = "card ok";
-        mA.innerHTML = `Nível estável. Nenhuma ação necessária para alcalinidade hoje.`;
-    }
-
-    // --- pH ---
-    const bP = document.getElementById('badgePH');
-    const mP = document.getElementById('msgPH');
-    const cP = document.getElementById('cardPH');
-    
-    if (ph < 7.2) {
-        const dose = 15 * m3;
-        bP.innerText = "Ácido"; cP.className = "card danger";
-        mP.innerHTML = `<span class="alert-callout">INTERDITAR BANHO</span> Aplique <b>${Math.round(dose)}g de Barrilha Leve</b>. Espalhe sobre a superfície e recircule por 4h antes de novo teste.`;
-    } else if (ph > 7.6) {
-        const dose = 10 * m3;
-        bP.innerText = "Alcalino"; cP.className = "card danger";
-        mP.innerHTML = `<span class="alert-callout">INTERDITAR BANHO</span> Aplique <b>${Math.round(dose)}ml de Redutor de pH</b>. O excesso de alcalinidade impede a ação do cloro.`;
-    } else {
-        bP.innerText = "Ideal"; cP.className = "card ok";
-        mP.innerHTML = `pH neutro (confortável). Mantém a eficiência total dos produtos sanitizantes.`;
-    }
-
-    // --- CLORO ---
-    const bC = document.getElementById('badgeCloro');
-    const mC = document.getElementById('msgCloro');
-    const cC = document.getElementById('cardCloro');
-    
-    if (cloro < 2.0) {
-        const doseManutencao = 4 * m3;
-        const doseChoque = (4 - cloro) * 4 * m3;
-        bC.innerText = "Baixo"; cC.className = "card danger";
-        mC.innerHTML = `<b>Correção imediata:</b> Aplique <b>${Math.round(doseChoque)}g de Cloro</b> agora.<br><b>Periodicidade:</b> Aplique <b>${Math.round(doseManutencao)}g diariamente</b> (ou conforme dissipação) para manter entre 2 e 4 ppm.`;
-    } else if (cloro >= 2.0 && cloro <= 4.0) {
-        const doseManutencao = 4 * m3;
-        bC.innerText = "Ideal"; cC.className = "card ok";
-        mC.innerHTML = `Nível seguro. Para manter este padrão, continue a dosagem diária de <b>${Math.round(doseManutencao)}g de cloro</b> ao entardecer.`;
-    } else if (cloro > 4.0 && cloro <= 6.0) {
-        bC.innerText = "Alto"; cC.className = "card warning";
-        mC.innerHTML = `Suspenda a adição de cloro por 24h. Deixe a piscina exposta ao sol para acelerar a dissipação natural.`;
-    } else {
-        const neutralizador = 15 * m3; // Média para neutralizador de cloro
-        bC.innerText = "Crítico"; cC.className = "card critical";
-        mC.innerHTML = `<span class="alert-callout">PROIBIR O BANHO!</span> Nível irritante. <br><b>Opção 1:</b> Aguarde 48h com bomba ligada sem adicionar produtos.<br><b>Opção 2:</b> Aplique <b>${Math.round(neutralizador)}g de Neutralizador de Cloro</b> para redução rápida.`;
-    }
-
-    document.getElementById('resultado').style.display = 'block';
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-}
-</script>
-
-</body>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PoolCalc Pro - Plano de Ação</title>
-    <style>
-        :root {
-            --primary: #0077be;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --critical: #4b0082;
-            --bg: #f4f7f6;
-        }
-
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); padding: 15px; color: #333; }
-        .container { max-width: 480px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: auto; }
-        
-        h2 { color: var(--primary); text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; font-size: 0.85em; color: #666; margin-bottom: 20px; }
-
-        .section-title { font-size: 0.8em; font-weight: bold; text-transform: uppercase; color: #888; margin: 20px 0 10px; display: block; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
-        
-        .flex-inputs { display: flex; gap: 10px; }
-        .flex-inputs input { flex: 1; }
-
-        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; }
-
-        button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        .result-box { margin-top: 25px; display: none; }
-        .vol-display { font-size: 1.1em; text-align: center; margin-bottom: 15px; font-weight: bold; color: var(--primary); background: #e3f2fd; padding: 10px; border-radius: 8px; }
-
-        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-right: 1px solid #eee; border-top: 1px solid #eee; border-bottom: 1px solid #eee;}
-        .card.ok { border-left-color: var(--success); }
-        .card.warning { border-left-color: var(--warning); }
-        .card.danger { border-left-color: var(--danger); }
-        .card.critical { border-left-color: var(--critical); }
-
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .status-badge { font-size: 0.7em; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; border: 1px solid;}
-        
-        .action-plan { font-size: 0.9em; line-height: 1.4; color: #444; }
-        .action-plan b { color: #000; }
-        .alert-callout { color: var(--danger); font-weight: bold; display: block; margin-bottom: 5px; text-decoration: underline; }
-        
-        .instruction-footer { background: #fffde7; padding: 15px; border-radius: 8px; font-size: 0.85em; border: 1px solid #fff59d; margin-top: 20px; }
-    </style>
-
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0077be">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3144/3144467.png">
 
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('Service Worker registado!'))
-      .catch(err => console.log('Erro ao registar:', err));
-  }
-</script>
+    <style>
+        :root {
+            --primary: #0077be;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --critical: #4b0082;
+            --bg: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); padding: 15px; color: #333; margin: 0; }
+        .container { max-width: 480px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: auto; }
+        
+        h2 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; font-size: 0.85em; color: #666; margin-bottom: 20px; }
+
+        .section-title { font-size: 0.8em; font-weight: bold; text-transform: uppercase; color: #888; margin: 20px 0 10px; display: block; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
+        
+        .flex-inputs { display: flex; gap: 10px; }
+        .flex-inputs input { flex: 1; }
+
+        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        button { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        .result-box { margin-top: 25px; display: none; }
+        .vol-display { font-size: 1.1em; text-align: center; margin-bottom: 15px; font-weight: bold; color: var(--primary); background: #e3f2fd; padding: 10px; border-radius: 8px; }
+
+        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 6px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-right: 1px solid #eee; border-top: 1px solid #eee; border-bottom: 1px solid #eee;}
+        .card.ok { border-left-color: var(--success); }
+        .card.warning { border-left-color: var(--warning); }
+        .card.danger { border-left-color: var(--danger); }
+        .card.critical { border-left-color: var(--critical); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .status-badge { font-size: 0.7em; font-weight: 800; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; border: 1px solid;}
+        
+        .action-plan { font-size: 0.9em; line-height: 1.4; color: #444; }
+        .action-plan b { color: #000; }
+        .alert-callout { color: var(--danger); font-weight: bold; display: block; margin-bottom: 5px; text-decoration: underline; }
+        
+        .instruction-footer { background: #fffde7; padding: 15px; border-radius: 8px; font-size: 0.85em; border: 1px solid #fff59d; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
@@ -304,6 +111,11 @@ function calcular() {
 </div>
 
 <script>
+// Registro do Service Worker para PWA
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+}
+
 function calcular() {
     const L = parseFloat(document.getElementById('largura').value);
     const C = parseFloat(document.getElementById('comprimento').value);
@@ -328,7 +140,7 @@ function calcular() {
         bA.innerText = "Corrigir Urgente"; cA.className = "card danger";
         mA.innerHTML = `Aplique <b>${Math.round(dose)}g de Bicarbonato de Sódio</b> em dose única. Reavalie após 6 horas de circulação.`;
     } else if (alca > 120) {
-        const dose = (alca - 100) * 1.5 * m3; // Ref aproximada p/ redução
+        const dose = (alca - 100) * 1.5 * m3;
         bA.innerText = "Alta"; cA.className = "card warning";
         mA.innerHTML = `Aplique <b>${Math.round(dose)}ml de Redutor de pH/Alcalinidade</b>. Divida em 2 doses com intervalo de 6h entre elas.`;
     } else {
@@ -363,24 +175,23 @@ function calcular() {
         const doseManutencao = 4 * m3;
         const doseChoque = (4 - cloro) * 4 * m3;
         bC.innerText = "Baixo"; cC.className = "card danger";
-        mC.innerHTML = `<b>Correção imediata:</b> Aplique <b>${Math.round(doseChoque)}g de Cloro</b> agora.<br><b>Periodicidade:</b> Aplique <b>${Math.round(doseManutencao)}g diariamente</b> (ou conforme dissipação) para manter entre 2 e 4 ppm.`;
+        mC.innerHTML = `<b>Correção imediata:</b> Aplique <b>${Math.round(doseChoque)}g de Cloro</b> agora.<br><b>Periodicidade:</b> Aplique <b>${Math.round(doseManutencao)}g diariamente</b> para manter entre 2 e 4 ppm.`;
     } else if (cloro >= 2.0 && cloro <= 4.0) {
         const doseManutencao = 4 * m3;
         bC.innerText = "Ideal"; cC.className = "card ok";
-        mC.innerHTML = `Nível seguro. Para manter este padrão, continue a dosagem diária de <b>${Math.round(doseManutencao)}g de cloro</b> ao entardecer.`;
+        mC.innerHTML = `Nível seguro. Continue a dosagem diária de <b>${Math.round(doseManutencao)}g de cloro</b> ao entardecer.`;
     } else if (cloro > 4.0 && cloro <= 6.0) {
         bC.innerText = "Alto"; cC.className = "card warning";
-        mC.innerHTML = `Suspenda a adição de cloro por 24h. Deixe a piscina exposta ao sol para acelerar a dissipação natural.`;
+        mC.innerHTML = `Suspenda a adição de cloro por 24h. Deixe a piscina exposta ao sol.`;
     } else {
-        const neutralizador = 15 * m3; // Média para neutralizador de cloro
+        const neutralizador = 15 * m3;
         bC.innerText = "Crítico"; cC.className = "card critical";
-        mC.innerHTML = `<span class="alert-callout">PROIBIR O BANHO!</span> Nível irritante. <br><b>Opção 1:</b> Aguarde 48h com bomba ligada sem adicionar produtos.<br><b>Opção 2:</b> Aplique <b>${Math.round(neutralizador)}g de Neutralizador de Cloro</b> para redução rápida.`;
+        mC.innerHTML = `<span class="alert-callout">PROIBIR O BANHO!</span> Nível irritante. Aplique <b>${Math.round(neutralizador)}g de Neutralizador de Cloro</b>.`;
     }
 
     document.getElementById('resultado').style.display = 'block';
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 </script>
-
 </body>
 </html>
