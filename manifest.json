@@ -1,0 +1,17 @@
+{
+  "name": "PoolCalc Pro",
+  "short_name": "PoolCalc",
+  "description": "Calculadora Técnica para Limpadores de Piscina",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0077be",
+  "theme_color": "#0077be",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3144/3144467.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
